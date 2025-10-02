@@ -9,24 +9,16 @@ Authors@R: c(
     )
 Description: 
     A minimal R package for accessing and visualizing Swedish municipal 
-    performance indicators from the Kolada API. Provides comprehensive 
-    functions to retrieve municipality metadata, search key performance 
-    indicators (KPIs), fetch time-series data, and create visualizations.
-    
-    Key features include:
-    - Retrieve complete lists of Swedish municipalities and counties with 
-      metadata using kld_municipalities()
-    - Search and browse available KPIs by title or category with 
-      kld_indicators()
-    - Fetch time-series data for specific municipalities and KPIs across 
-      multiple years with kld_values()
-    - Generate quick line plots for data visualization with kld_plot()
-    
-    The package handles API response normalization, data type conversion, 
-    and includes robust error handling. Designed for reproducibility with 
-    comprehensive unit tests using recorded HTTP fixtures for offline testing.
-    Ideal for researchers, analysts, and students working with Swedish 
-    municipal statistics.
+    performance indicators from the Kolada API. Provides functions to 
+    retrieve municipality metadata, search key performance indicators (KPIs), 
+    fetch time-series data, and create visualizations. Key features include: 
+    retrieving complete lists of Swedish municipalities and counties with 
+    metadata using kld_municipalities(); searching and browsing available KPIs 
+    by title or category with kld_indicators(); fetching time-series data for 
+    specific municipalities and KPIs across multiple years with kld_values(); 
+    and generating quick line plots for data visualization with kld_plot(). 
+    Handles API response normalization and includes unit tests with recorded 
+    HTTP fixtures.
 License: MIT + file LICENSE
 Depends: 
     R (>= 4.1)
