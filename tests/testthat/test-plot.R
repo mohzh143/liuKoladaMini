@@ -7,5 +7,9 @@ test_that("kld_plot works on kld_values() output (recorded fixture)", {
   })
 
   p <- kld_plot(df)
+
   expect_s3_class(p, "ggplot")
+
+  expect_true(grepl("N02282", p$labels$title))
+  expect_true(grepl("0580", p$labels$title))
 })
