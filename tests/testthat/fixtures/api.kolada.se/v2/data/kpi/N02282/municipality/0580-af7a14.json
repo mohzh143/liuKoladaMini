@@ -1,0 +1,105 @@
+{
+    "count": 4,
+    "values": [
+        {
+            "kpi": "N02282",
+            "municipality": "0580",
+            "period": 2020,
+            "values": [
+                {
+                    "count": 1,
+                    "gender": "K",
+                    "status": "",
+                    "value": 17.897092
+                },
+                {
+                    "count": 1,
+                    "gender": "M",
+                    "status": "",
+                    "value": 17.411018
+                },
+                {
+                    "count": 1,
+                    "gender": "T",
+                    "status": "",
+                    "value": 17.623774
+                }
+            ]
+        },
+        {
+            "kpi": "N02282",
+            "municipality": "0580",
+            "period": 2021,
+            "values": [
+                {
+                    "count": 1,
+                    "gender": "K",
+                    "status": "",
+                    "value": 16.450486
+                },
+                {
+                    "count": 1,
+                    "gender": "M",
+                    "status": "",
+                    "value": 14.232333
+                },
+                {
+                    "count": 1,
+                    "gender": "T",
+                    "status": "",
+                    "value": 15.278102
+                }
+            ]
+        },
+        {
+            "kpi": "N02282",
+            "municipality": "0580",
+            "period": 2022,
+            "values": [
+                {
+                    "count": 1,
+                    "gender": "K",
+                    "status": "",
+                    "value": 14.895636
+                },
+                {
+                    "count": 1,
+                    "gender": "M",
+                    "status": "",
+                    "value": 11.920813
+                },
+                {
+                    "count": 1,
+                    "gender": "T",
+                    "status": "",
+                    "value": 13.354334
+                }
+            ]
+        },
+        {
+            "kpi": "N02282",
+            "municipality": "0580",
+            "period": 2023,
+            "values": [
+                {
+                    "count": 1,
+                    "gender": "K",
+                    "status": "",
+                    "value": 14.417283
+                },
+                {
+                    "count": 1,
+                    "gender": "M",
+                    "status": "",
+                    "value": 11.583776
+                },
+                {
+                    "count": 1,
+                    "gender": "T",
+                    "status": "",
+                    "value": 12.933051
+                }
+            ]
+        }
+    ]
+}
