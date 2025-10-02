@@ -3,7 +3,7 @@ Package: liuKoladaMini
 Title: Minimal Kolada API Client for Municipalities, KPIs and Values
 Version: 0.0.0.9000
 Authors@R: c(  
-      person(given = "Mohan", family = "Zhang", email = "mohzh143@student.liu.se", role = c("aut", "cre"))
+      person(given = "Mohan", family = "Zhang", email = "mohzh143@student.liu.se", role = c("aut", "cre")),
       person(given = "Chenzhi", family = "Ni", email = "pinkmannicz@gmail.com", role = "aut"),
       person(given = "Siyuan", family = "Xu", email = "ningschue@gmail.com", role = "aut")      
     )
