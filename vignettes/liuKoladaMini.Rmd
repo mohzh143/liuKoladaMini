@@ -1,6 +1,8 @@
 ---
 title: "liuKoladaMini: Minimal Kolada API Client"
-author: "Mohan Zhang"
+author:
+  - Chenzhi Ni
+  - Mohan Zhang
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,59 +11,301 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-library(liuKoladaMini)
-```
-
 ## Introduction
 
-`liuKoladaMini` is a minimal client for the [Kolada API](https://www.kolada.se/),  
-focusing on municipalities (kommuner) and indicators (KPI).  
-It provides simple functions to explore and analyze Swedish municipality data.
+liuKoladaMini is a lightweight client for the Kolada API(https://www.kolada.se/), providing access to Swedish municipal key performance indicator data. This package offers simple and intuitive functions to explore and analyze data from Swedish municipalities.
 
-Main functions:
-- `kld_municipalities()` – list municipalities  
-- `kld_indicators()` – list/search KPIs (indicators)  
-- `kld_values()` – fetch values for a KPI in a municipality  
-- `kld_plot()` – quick plotting of KPI values  
+Main Features
+kld_municipalities() - List all municipalities and counties
 
----
+kld_indicators() - List or search key performance indicators
 
-## Example Usage
+kld_values() - Retrieve time-series data for specific municipalities and indicators
 
-### List municipalities
+kld_plot() - Quick visualization of data trends
+
+##Installation and Loading
+
 ```{r}
-head(kld_municipalities())
+
+# Load the package
+library(liuKoladaMini)
+
+# Load ggplot2
+library(ggplot2)
 ```
 
-### Search indicators (e.g. "arbetslöshet")
+## Data Exploration
+
+### Explore Available Municipalities and Counties
+
+First, let's examine the available geographical regions:
+
 ```{r}
-head(kld_indicators("arbetslöshet"))
+# Get all municipalities and counties
+municipalities <- kld_municipalities()
+
+# View data structure
+str(municipalities)
+
+# View first few rows
+head(municipalities)
+
+# Count different types of geographical regions
+table(municipalities$type)
+
+# Find specific municipality
+linkoping <- municipalities[municipalities$title == "Linköping", ]
+linkoping
 ```
 
-### Fetch values (Linköping, KPI N02282: Arbetslöshet utrikes födda)
+### Explore Key Performance Indicators
+
+Now let's examine the available indicators:
+
 ```{r}
-df <- kld_values("0580", "N02282", 2019:2024)
-df
+# Get all indicators
+all_indicators <- kld_indicators()
+
+# View total number of indicators
+nrow(all_indicators)
+
+# View indicator structure
+str(all_indicators)
+
+# Search for specific indicators
+unemployment_indicators <- kld_indicators("arbetslöshet")
+head(unemployment_indicators)
+
+# Search for education-related indicators
+education_indicators <- kld_indicators("utbildning")
+head(education_indicators)
 ```
 
-### Plot values
+## Data Retrieval and Analysis
+
+### Retrieve Single Indicator Data
+
 ```{r}
-p <- kld_plot(df)
-p
+# Get unemployment data for foreign-born population in Linköping (2019-2024)
+linkoping_unemp <- kld_values(
+  municipality_id = "0580",      # Linköping municipality ID
+  kpi_id = "N02282",             # Unemployment indicator ID
+  period = 2019:2024             # Time range
+)
+
+# View the data
+linkoping_unemp
+
+# Data summary
+summary(linkoping_unemp$value)
 ```
 
----
+### Retrieve Data for Multiple Time Periods
+
+```{r}
+# Get data for a longer time range
+long_term_data <- kld_values(
+  municipality_id = "0580",
+  kpi_id = "N02282", 
+  period = 2010:2024
+)
+
+head(long_term_data)
+```
+
+### Compare Data Across Different Cities
+
+```{r}
+# Get unemployment data for multiple cities for comparison
+cities <- c("0580", "0581")  # Linköping and Norrköping
+city_names <- c("Linköping", "Norrköping")
+
+# Retrieve data
+multi_city_data <- lapply(seq_along(cities), function(i) {
+  data <- kld_values(
+    municipality_id = cities[i],
+    kpi_id = "N02282",
+    period = 2019:2024
+  )
+  data$city <- city_names[i]
+  return(data)
+})
+
+# Combine data
+combined_data <- do.call(rbind, multi_city_data)
+combined_data
+```
+
+## Data Visualization
+
+### Basic Visualization
+
+```{r}
+# Single city data visualization
+p1 <- kld_plot(linkoping_unemp) +
+  ggtitle("Unemployment Trend for Foreign-Born Population in Linköping") +
+  theme_minimal()
+
+p1
+```
+
+### Custom Visualization
+
+```{r}
+# Custom enriched visualization
+ggplot(linkoping_unemp, aes(x = year, y = value)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "darkblue", size = 2) +
+  geom_area(fill = "lightblue", alpha = 0.3) +
+  labs(
+    title = "Unemployment Trend for Foreign-Born Population in Linköping (2019-2024)",
+    x = "Year",
+    y = "Unemployment Rate (%)",
+    caption = "Data Source: Kolada API"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+### Multi-City Comparison Visualization
+
+```{r}
+# Multi-city comparison visualization
+if (exists("combined_data")) {
+  ggplot(combined_data, aes(x = year, y = value, color = city, group = city)) +
+    geom_line(size = 1.2) +
+    geom_point(size = 2) +
+    labs(
+      title = "Unemployment Rate Comparison for Foreign-Born Population Across Cities",
+      x = "Year",
+      y = "Unemployment Rate (%)",
+      color = "City",
+      caption = "Data Source: Kolada API"
+    ) +
+    theme_minimal() +
+    scale_color_brewer(palette = "Set1") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+}
+```
+
+## Advanced Usage
+
+### Error Handling and Data Validation
+```{r}
+# Handle non-existent indicator IDs
+tryCatch({
+  invalid_data <- kld_values("0580", "INVALID_KPI", 2020:2022)
+}, error = function(e) {
+  message("Error: ", e$message)
+})
+
+# Handle non-existent municipality IDs
+tryCatch({
+  invalid_city <- kld_values("9999", "N02282", 2020:2022)
+}, error = function(e) {
+  message("Error: ", e$message)
+})
+```
+
+### Data Quality Checks
+
+```{r}
+# Check data completeness
+if (exists("linkoping_unemp")) {
+  cat("Data Completeness Check:\n")
+  cat("Total rows:", nrow(linkoping_unemp), "\n")
+  cat("Missing values:", sum(is.na(linkoping_unemp$value)), "\n")
+  cat("Data coverage years:", paste(range(linkoping_unemp$year), collapse = " - "), "\n")
+  cat("Value range:", paste(range(linkoping_unemp$value, na.rm = TRUE), collapse = " - "), "\n")
+}
+```
+
+## Practical Use Cases
+
+### Case Study: Analyzing Education Indicators
+```{r}
+# Search for education-related indicators
+education_kpis <- kld_indicators("gymnasie")
+head(education_kpis)
+
+# Get high school completion rate data
+if (nrow(education_kpis) > 0) {
+  gymnasie_kpi <- education_kpis$id[1]  # Use the first relevant indicator
+  
+  education_data <- kld_values(
+    municipality_id = "0580",
+    kpi_id = gymnasie_kpi,
+    period = 2015:2023
+  )
+  
+  if (nrow(education_data) > 0) {
+    # Visualize education data
+    ggplot(education_data, aes(x = year, y = value)) +
+      geom_col(fill = "lightgreen", alpha = 0.7) +
+      labs(
+        title = "High School Completion Rate Trend in Linköping",
+        x = "Year",
+        y = "Completion Rate (%)"
+      ) +
+      theme_minimal()
+  }
+}
+```
+
+## Best Practices
+
+1. Data Caching
+
+```{r}
+# In practical applications, cache frequently used data
+cache_municipalities <- kld_municipalities()
+cache_indicators <- kld_indicators()
+```
+
+2. Batch Processing
+
+```{r}
+# Batch retrieve data for multiple indicators
+kpi_list <- c("N02282", "N00001")  # Unemployment rate and total population
+municipality_list <- c("0580", "0180")  # Linköping and Stockholm
+
+# Use loops for batch data retrieval
+all_data <- list()
+for (kpi in kpi_list) {
+  for (municipality in municipality_list) {
+    data <- kld_values(municipality, kpi, 2020:2023)
+    all_data[[paste(municipality, kpi, sep = "_")]] <- data
+  }
+}
+```
+
+3. Data Export
+
+```{r}
+# Export data for other analyses
+write.csv(linkoping_unemp, "linkoping_unemployment.csv", row.names = FALSE)
+
+# Or save as R data file
+saveRDS(linkoping_unemp, "linkoping_unemployment.rds")
+```
 
 ## Conclusion
 
-This vignette demonstrates how to:
-1. Find municipalities and indicators
-2. Fetch KPI values
-3. Plot trends quickly  
+This guide demonstrates how to use the liuKoladaMini package for:
 
-The package is designed as a lightweight educational example for Lab05.
+1. Data Exploration - Discover available municipalities, counties, and key performance indicators
+
+2. Data Retrieval - Obtain time-series data for specific indicators
+
+3. Data Analysis - Perform basic data analysis and quality checks
+
+4. Data Visualization - Create meaningful charts to display trends
+
+5. Practical Applications - Solve real-world data analysis problems
+
+The package is designed as a lightweight educational example suitable for learning R package development and API integration. Through simple function interfaces, users can easily access rich Swedish municipal data to support various data analysis projects.
+
