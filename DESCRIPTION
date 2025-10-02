@@ -2,12 +2,31 @@ Type: Package
 Package: liuKoladaMini
 Title: Minimal Kolada API Client for Municipalities, KPIs and Values
 Version: 0.0.0.9000
-Authors@R: 
-    person("Mohan", "Zhang", , "mohzh143@student.liu.se", role = c("aut", "cre"))
-Description: Minimal example package for Lab05. Provides three functions
-    to access the Kolada API: list municipalities, list/search KPIs, and
-    fetch KPI values for a municipality. Includes unit tests with recorded
-    HTTP fixtures for offline replay.
+Authors@R: c(  
+      person(given = "Mohan", family = "Zhang", email = "mohzh143@student.liu.se", role = c("aut", "cre"))
+      person(given = "Chenzhi", family = "Ni", email = "pinkmannicz@gmail.com", role = "aut"),
+      person(given = "Siyuan", family = "Xu", email = "ningschue@gmail.com", role = "aut")      
+    )
+Description: 
+    A minimal R package for accessing and visualizing Swedish municipal 
+    performance indicators from the Kolada API. Provides comprehensive 
+    functions to retrieve municipality metadata, search key performance 
+    indicators (KPIs), fetch time-series data, and create visualizations.
+    
+    Key features include:
+    - Retrieve complete lists of Swedish municipalities and counties with 
+      metadata using kld_municipalities()
+    - Search and browse available KPIs by title or category with 
+      kld_indicators()
+    - Fetch time-series data for specific municipalities and KPIs across 
+      multiple years with kld_values()
+    - Generate quick line plots for data visualization with kld_plot()
+    
+    The package handles API response normalization, data type conversion, 
+    and includes robust error handling. Designed for reproducibility with 
+    comprehensive unit tests using recorded HTTP fixtures for offline testing.
+    Ideal for researchers, analysts, and students working with Swedish 
+    municipal statistics.
 License: MIT + file LICENSE
 Depends: 
     R (>= 4.1)
