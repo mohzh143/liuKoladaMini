@@ -1,0 +1,53 @@
+
+# liuKoladaMini
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/mohzh143/liuKoladaMini/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mohzh143/liuKoladaMini/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+This package provides functions to interact with the [Kolada
+API](https://www.kolada.se), making it easy to retrieve and visualize
+Swedish municipal indicators (KPI).
+
+## Installation
+
+You can install the development version of **liuKoladaMini** from GitHub
+with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("mohzh143/liuKoladaMini")
+```
+
+## Example
+
+Here is a simple example of retrieving values for a KPI
+(e.g. unemployment rate) for Linköping municipality:
+
+``` r
+library(liuKoladaMini)
+
+# Get values for municipality "0580" and KPI "N02282" for years 2019–2024
+df <- kld_values("0580", "N02282", 2019:2024)
+
+# Print results
+print(df)
+
+# Plot values
+p <- kld_plot(df)
+print(p)
+```
+
+## Tests
+
+The package uses **testthat** and **httptest2** to test API calls with
+recorded fixtures:
+
+``` r
+testthat::test_local()
+```
+
+## License
+
+This package is released under the MIT license.
