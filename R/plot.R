@@ -13,22 +13,26 @@
 #' @export
 #'
 #' @examples
-#' # First, retrieve some data using kld_values()
-#' # This example uses a mock directory to ensure reproducibility.
-#' # In a real scenario, this would call the live API.
 #' \dontrun{
-#'   # Assumes a mock fixture exists for this API call.
 #'   df <- kld_values("0580", "N02282", 2019:2024)
-#'
-#'   # Create the plot
 #'   kld_plot(df)
 #' }
 kld_plot <- function(df) {
-  if (!all(c("year","value") %in% names(df))) {
+  if (!all(c("year", "value") %in% names(df))) {
     stop("Input data must contain columns: 'year' and 'value'.", call. = FALSE)
   }
-  ggplot2::ggplot(df, ggplot2::aes(x = .data$year, y = .data$value)) +
-    ggplot2::geom_line() +
-    ggplot2::geom_point() +
-    ggplot2::labs(x = "Year", y = "Value")
+
+  # Auto-generate title
+  title_txt <- if ("municipality_id" %in% names(df) && "kpi_id" %in% names(df)) {
+    paste0("KPI ", unique(df$kpi_id), " in municipality ", unique(df$municipality_id))
+  } else {
+    "KPI values"
+  }
+
+  ggplot2::ggplot(df, ggplot2::aes(x = .data$year, y = .data$value, group = 1)) +
+    ggplot2::geom_line(color = "steelblue") +
+    ggplot2::geom_point(color = "darkred") +
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+    ggplot2::labs(x = "Year", y = "Value", title = title_txt) +
+    ggplot2::theme_minimal()
 }
